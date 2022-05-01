@@ -1,0 +1,11 @@
+{
+    "entryPoints": [
+        "./src/EjercicioPE102/Cut.ts",
+        "./src/ejercicio-2/WordFinder.ts",
+        "./src/ejercicio-3/DirectoryWatcher.ts",
+        "./src/ejercicio-4/Wrapper.ts"
+    ],
+    "out": "./docs/",
+    "sort": "enum-value-ascending",
+    "name": "Informe Práctica 11"
+}
