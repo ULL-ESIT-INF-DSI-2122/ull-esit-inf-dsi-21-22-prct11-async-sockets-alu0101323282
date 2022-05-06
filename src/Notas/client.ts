@@ -1,24 +1,6 @@
 import * as yargs from 'yargs';
-import {NoteManager} from './NoteManager';
-import * as net from 'net';
-import {ClientRequestEmitter} from './ClientRequestEmitter';
-import {RequestType, ResponseType} from './types';
-import chalk = require('chalk');
-
-function connectClient(client: ClientRequestEmitter): void {
-  client.on('response', (data) => {
-    const response: ResponseType = data;
-    if (response.type === 'connected') {
-      console.log(`Connection established`);
-    } else {
-      if (response.success) {
-        console.log(chalk.green(response.message));
-      } else {
-        console.log(chalk.red(response.message));
-      }
-    }
-  });
-}
+import {NoteClient} from './NoteClient';
+import {RequestType} from './types';
 
 yargs.command({
   command: 'add',
@@ -47,9 +29,7 @@ yargs.command({
   },
   handler(argv) {
     if (typeof argv.user === 'string' && typeof argv.title === 'string' && typeof argv.body === 'string' && typeof argv.color === 'string') {
-      const socket = net.connect({port: 60300});
-      const client = new ClientRequestEmitter(socket);
-      connectClient(client);
+      const noteClient = new NoteClient();
       const request: RequestType = {
         type: 'add',
         user: argv.user,
@@ -57,7 +37,8 @@ yargs.command({
         body: argv.body,
         color: argv.color,
       };
-      socket.write(JSON.stringify(request));
+      noteClient.sendRequest(request);
+      noteClient.processResponse();
     }
   },
 }).command({
@@ -92,9 +73,7 @@ yargs.command({
   },
   handler(argv) {
     if (typeof argv.user === 'string' && typeof argv.title === 'string' && typeof argv.body === 'string' && typeof argv.color === 'string') {
-      const socket = net.connect({port: 60300});
-      const client = new ClientRequestEmitter(socket);
-      connectClient(client);
+      const noteClient = new NoteClient();
       let request: RequestType;
       if (typeof argv.newTitle === 'string') {
         request = {
@@ -114,7 +93,8 @@ yargs.command({
           color: argv.color,
         };
       }
-      socket.write(JSON.stringify(request));
+      noteClient.sendRequest(request);
+      noteClient.processResponse();
     }
   },
 }).command({
@@ -134,15 +114,14 @@ yargs.command({
   },
   handler(argv) {
     if (typeof argv.user === 'string' && typeof argv.title === 'string') {
-      const socket = net.connect({port: 60300});
-      const client = new ClientRequestEmitter(socket);
-      connectClient(client);
+      const noteClient = new NoteClient();
       const request: RequestType = {
         type: 'remove',
         user: argv.user,
         title: argv.title,
       };
-      socket.write(JSON.stringify(request));
+      noteClient.sendRequest(request);
+      noteClient.processResponse();
     }
   },
 }).command({
@@ -162,7 +141,14 @@ yargs.command({
   },
   handler(argv) {
     if (typeof argv.user === 'string' && typeof argv.title === 'string') {
-      NoteManager.readNote(argv.user, argv.title);
+      const noteClient = new NoteClient();
+      const request: RequestType = {
+        type: 'read',
+        user: argv.user,
+        title: argv.title,
+      };
+      noteClient.sendRequest(request);
+      noteClient.processResponse();
     }
   },
 }).command({
@@ -177,7 +163,13 @@ yargs.command({
   },
   handler(argv) {
     if (typeof argv.user === 'string') {
-      NoteManager.listNotes(argv.user);
+      const noteClient = new NoteClient();
+      const request: RequestType = {
+        type: 'list',
+        user: argv.user,
+      };
+      noteClient.sendRequest(request);
+      noteClient.processResponse();
     }
   },
 }).parse();

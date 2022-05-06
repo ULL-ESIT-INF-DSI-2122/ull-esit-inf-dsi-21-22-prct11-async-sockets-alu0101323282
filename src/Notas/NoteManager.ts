@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
 import {existsSync, mkdir, readdir, readFile, rename, rm, writeFile} from 'fs';
 import {Note} from './Note';
 import * as chalk from 'chalk';
-import {Color} from './types';
 
 
 /**
@@ -130,75 +128,48 @@ export class NoteManager {
    * @param user User
    * @param title Title
    */
-  public static readNote(user: string, title: string) {
+  readNote = (user: string, title: string, cb: (
+    err: string | undefined, data: string | undefined) => void) => {
     if (existsSync(`src/Notas/${user}/${title}.json`)) {
       readFile(`src/Notas/${user}/${title}.json`, (err, data) => {
         if (err) {
+          cb('There must be a problem with the file you are trying to read', undefined);
           console.log(chalk.red('There must be a problem with the file you are trying to read'));
         } else {
-          let note: Note = Note.deserialize(JSON.parse(data.toString()));
-          let color: string = note.getColor();
-          let body: string = note.getBody();
-          switch (color) {
-            case Color.RED:
-              console.log(chalk.red(title));
-              console.log(chalk.red(body));
-              break;
-            case Color.GREEN:
-              console.log(chalk.green(title));
-              console.log(chalk.green(body));
-              break;
-            case Color.YELLOW:
-              console.log(chalk.yellow(title));
-              console.log(chalk.yellow(body));
-              break;
-            case Color.BLUE:
-              console.log(chalk.blue(title));
-              console.log(chalk.blue(body));
-              break;
-          }
+          cb(undefined, data.toString());
         }
       });
     } else {
-      console.log(chalk.red('Note not found'));
+      cb('Note not found', undefined);
     }
-  }
+  };
 
   /**
    * List notes
    * @param user User
    */
-  public static listNotes(user: string) {
+  listNotes = (user: string, cb: (
+    err: string | undefined, data: string[] | undefined) => void) => {
     readdir(`src/Notas/${user}`, (err, files) => {
       if (err) {
-        throw err;
+        cb('Error reading notes directory', undefined);
+      } else if (files.length === 0) {
+        cb('The notes directory is empty', undefined);
       } else {
-        console.log(chalk.green('Your notes'));
+        let notes: string[] = [];
         files.forEach((file) => {
           readFile(`src/Notas/${user}/${file}`, (err, data) => {
             if (err) {
-              console.log(chalk.red('There must be a problem with the file you are trying to read'));
+              cb('Error reading note file', undefined);
             } else {
-              let color = Note.deserialize(JSON.parse(data.toString())).getColor();
-              let filename: string = file.substring(0, file.length-5);
-              switch (color) {
-                case Color.RED:
-                  console.log(chalk.red(filename));
-                  break;
-                case Color.GREEN:
-                  console.log(chalk.green(filename));
-                  break;
-                case Color.YELLOW:
-                  console.log(chalk.yellow(filename));
-                  break;
-                case Color.BLUE:
-                  console.log(chalk.blue(filename));
-                  break;
+              notes.push(data.toString());
+              if (notes.length === files.length) {
+                cb(undefined, notes);
               }
             }
           });
         });
       }
     });
-  }
+  };
 }

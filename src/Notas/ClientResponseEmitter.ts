@@ -3,7 +3,7 @@ import {EventEmitter} from 'events';
 /**
  * Class that extends from EventEmitter
  */
-export class ClientRequestEmitter extends EventEmitter {
+export class ClientResponseEmitter extends EventEmitter {
   /**
    * Constructor
    * @param connection Socket
@@ -11,8 +11,8 @@ export class ClientRequestEmitter extends EventEmitter {
   constructor(connection: EventEmitter) {
     super();
     connection.on('data', (data) => {
-      const response = JSON.parse(data);
-      this.emit('response', response);
+      const message = JSON.parse(data);
+      this.emit('response', message);
     });
   }
 }

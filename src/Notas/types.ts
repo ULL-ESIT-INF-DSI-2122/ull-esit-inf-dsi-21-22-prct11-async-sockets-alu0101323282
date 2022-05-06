@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import {Note} from './Note';
+import {Note, NoteInterface} from './Note';
 
 
 /**
@@ -28,8 +28,8 @@ export type RequestType = {
 }
 
 export type ResponseType = {
-    type: 'connected' | 'add' | 'update' | 'remove' | 'read' | 'list';
+    type: 'add' | 'update' | 'remove' | 'read' | 'list';
     success: boolean;
     message: string;
-    notes?: Note[];
+    notes?: string[];
 }
