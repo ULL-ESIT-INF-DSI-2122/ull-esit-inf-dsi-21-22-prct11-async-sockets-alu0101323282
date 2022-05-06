@@ -2,3 +2,4 @@ node_modules
 dist
 .vscode
 Practicas.code-workspace
+coverage
