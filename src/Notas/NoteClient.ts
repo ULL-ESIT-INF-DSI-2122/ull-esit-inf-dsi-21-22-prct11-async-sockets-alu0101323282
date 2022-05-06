@@ -5,17 +5,36 @@ import {Note} from './Note';
 import EventEmitter = require('events');
 import {ClientResponseEmitter} from './ClientResponseEmitter';
 
-
+/**
+ * Class to manage client session in the note-app
+ */
 export class NoteClient {
+  /**
+   * Socket
+   */
   private readonly socket: net.Socket;
+  /**
+   * Client response emitter
+   */
   private readonly client: EventEmitter;
+  /**
+   * Constructor
+   */
   constructor() {
     this.socket = net.connect({port: 60300});
     this.client = new ClientResponseEmitter(this.socket);
   }
+  /**
+   * Sends a request to the server
+   * @param request Request to send
+   */
   sendRequest(request: RequestType): void {
     this.socket.write(JSON.stringify(request));
   }
+
+  /**
+   * Process server response
+   */
   processResponse(): void {
     this.client.on('response', (data) => {
       const response: ResponseType = data;

@@ -1,6 +1,5 @@
 import {existsSync, mkdir, readdir, readFile, rename, rm, writeFile} from 'fs';
 import {Note} from './Note';
-import * as chalk from 'chalk';
 
 
 /**
@@ -70,7 +69,7 @@ export class NoteManager {
             let alreadyExists: boolean = false;
             files.forEach((file) => {
               if (file === newTitle + '.json') {
-                alreadyExists = true;
+                alreadyExists = true;// //////////////77
               }
             });
             if (alreadyExists) {
@@ -134,7 +133,6 @@ export class NoteManager {
       readFile(`src/Notas/${user}/${title}.json`, (err, data) => {
         if (err) {
           cb('There must be a problem with the file you are trying to read', undefined);
-          console.log(chalk.red('There must be a problem with the file you are trying to read'));
         } else {
           cb(undefined, data.toString());
         }

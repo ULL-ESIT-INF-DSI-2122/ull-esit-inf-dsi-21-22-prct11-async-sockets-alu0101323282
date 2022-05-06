@@ -1,9 +1,12 @@
 {
     "entryPoints": [
-        "./src/EjercicioPE102/Cut.ts",
-        "./src/ejercicio-2/WordFinder.ts",
-        "./src/ejercicio-3/DirectoryWatcher.ts",
-        "./src/ejercicio-4/Wrapper.ts"
+        "./src/EjercicioPE102/CommandEmitter.ts",
+        "./src/Notas/ClientResponseEmitter.ts",
+        "./src/Notas/Note.ts",
+        "./src/Notas/NoteClient.ts",
+        "./src/Notas/NoteManager.ts",
+        "./src/Notas/server.ts",
+        "./src/Notas/types.ts"
     ],
     "out": "./docs/",
     "sort": "enum-value-ascending",

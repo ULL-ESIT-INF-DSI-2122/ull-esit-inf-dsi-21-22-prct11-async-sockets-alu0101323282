@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events';
 
 /**
- * Class that extends from EventEmitter
+ * Class to emits events when receive data
  */
 export class ClientResponseEmitter extends EventEmitter {
   /**

@@ -2,7 +2,13 @@ import * as net from 'net';
 import {NoteManager} from './NoteManager';
 import {RequestType} from './types';
 
+/**
+ * Class to manage note-app server
+ */
 export class NoteServer {
+  /**
+   * Constructor
+   */
   constructor() {
     net.createServer({allowHalfOpen: true}, (connection) => {
       console.log('A client has connected.');

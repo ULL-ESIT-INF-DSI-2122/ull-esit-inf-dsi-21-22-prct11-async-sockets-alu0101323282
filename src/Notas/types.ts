@@ -18,6 +18,9 @@ export enum Color {
     GRAY = 'gray'
 };
 
+/**
+ * Type for client requests
+ */
 export type RequestType = {
     type: 'add' | 'update' | 'remove' | 'read' | 'list';
     user: string;
@@ -27,6 +30,9 @@ export type RequestType = {
     color?: string;
 }
 
+/**
+ * Type for server responses
+ */
 export type ResponseType = {
     type: 'add' | 'update' | 'remove' | 'read' | 'list';
     success: boolean;
