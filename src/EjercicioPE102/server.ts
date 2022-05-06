@@ -2,22 +2,22 @@ import {spawn} from 'child_process';
 import * as net from 'net';
 
 
-net.createServer((connection) => {
+net.createServer({allowHalfOpen: true}, (connection) => {
   console.log('A client has connected.');
   connection.write(JSON.stringify({'type': 'connected'}));
+  let petition: string = '';
   connection.on('data', (data) => {
-    console.log('Command to execute: ' + data.toString());
-    const command = spawn(data.toString(), {shell: true});
+    petition = data.toString();
+  });
+  connection.on('end', () => {
+    console.log(`Command to execute: ${petition}`);
+    const command = spawn(petition, {shell: true});
     command.stdout.on('data', (dataChunk) => {
       connection.write(JSON.stringify({'type': 'success', 'msg': dataChunk.toString()}));
       connection.end();
     });
     command.stderr.on('data', (error) => {
       connection.write(JSON.stringify({'type': 'stderr', 'msg': error.toString()}));
-      connection.end();
-    });
-    command.on('error', (err) => {
-      connection.write(JSON.stringify({'type': 'error', 'msg': err.message}));
       connection.end();
     });
   });

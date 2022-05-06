@@ -14,9 +14,9 @@ if (process.argv.length !== 3) {
       console.log(`Connection established: executing command ${command}`);
     } else if (message.type === 'success') {
       console.log(`Result: ${message.msg}`);
-    } else if (message.type === 'error') {
-      console.log(`Command error: ${message.msg}`);
     } else if (message.type === 'stderr') {
+      console.log(`Command error: ${message.msg}`);
+    } else if (message.type === 'error') {
       console.log(`Error executing the command: ${message.msg}`);
     } else {
       console.log(`Message type ${message.type} is not valid`);
