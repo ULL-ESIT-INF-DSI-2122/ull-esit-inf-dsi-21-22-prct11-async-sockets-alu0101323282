@@ -110,19 +110,20 @@ export class NoteManager {
    * @param user User
    * @param title Title
    */
-  public static removeNote(user: string, title: string) {
+  removeNote = (user: string, title: string, cb: (
+    err: string | undefined, data: string | undefined) => void) => {
     if (existsSync(`src/Notas/${user}/${title}.json`)) {
       rm(`src/Notas/${user}/${title}.json`, (err) => {
         if (err) {
-          throw err;
+          cb('Error removing the note', undefined);
         } else {
-          console.log(chalk.green('Note removed!'));
+          cb(undefined, 'Note removed!');
         }
       });
     } else {
-      console.log(chalk.red('Note not found'));
+      cb('Note not found', undefined);
     }
-  }
+  };
 
   /**
    * Reads a note

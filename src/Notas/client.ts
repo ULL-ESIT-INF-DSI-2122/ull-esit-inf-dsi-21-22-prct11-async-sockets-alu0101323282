@@ -134,7 +134,15 @@ yargs.command({
   },
   handler(argv) {
     if (typeof argv.user === 'string' && typeof argv.title === 'string') {
-      NoteManager.removeNote(argv.user, argv.title);
+      const socket = net.connect({port: 60300});
+      const client = new ClientRequestEmitter(socket);
+      connectClient(client);
+      const request: RequestType = {
+        type: 'remove',
+        user: argv.user,
+        title: argv.title,
+      };
+      socket.write(JSON.stringify(request));
     }
   },
 }).command({
