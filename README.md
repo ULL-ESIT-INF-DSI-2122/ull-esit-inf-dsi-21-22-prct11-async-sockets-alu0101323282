@@ -313,7 +313,76 @@ yargs.command({
 
 ### __NoteClient__
 
+Esta clase sirve para conectarse como cliente al servidor de la aplicación y contiene dos métodos para enviar una petición `sendRequest()` y para procesar la respuesta del servidor `processResponse()`, los cuales funcionan de la siguiente manera:
+- sendRequest(): este método envía la petición pasada como parámetro al servidor mediante `write`.
+- processResponse(): este metodo contiene un manejador para el evento `response` (este será emitido desde la clase `ClientResponseEmitter` una vez recibida una respuesta del servidor) el cual muestra por pantalla la respuesta del servidor en el formato y color correspondinte (con [chalk](https://www.npmjs.com/package/chalk)) según el tipo de respuesta.
 
+``` typescript
+export class NoteClient {
+  private readonly socket: net.Socket;
+  private readonly client: EventEmitter;
+  constructor() {
+    this.socket = net.connect({port: 60300});
+    this.client = new ClientResponseEmitter(this.socket);
+  }
+  sendRequest(request: RequestType): void {
+    this.socket.write(JSON.stringify(request));
+  }
+  processResponse(): void {
+    this.client.on('response', (data) => {
+      const response: ResponseType = data;
+      if (response.success) {
+        if (response.type === 'read') {
+          const note: Note = Note.deserialize(JSON.parse(response.message));
+          switch (note.getColor()) {
+            case Color.RED:
+              console.log(chalk.red(note.getTitle()));
+              console.log(chalk.red(note.getBody()));
+              break;
+            case Color.GREEN:
+              console.log(chalk.green(note.getTitle()));
+              console.log(chalk.green(note.getBody()));
+              break;
+            case Color.YELLOW:
+              console.log(chalk.yellow(note.getTitle()));
+              console.log(chalk.yellow(note.getBody()));
+              break;
+            case Color.BLUE:
+              console.log(chalk.blue(note.getTitle()));
+              console.log(chalk.blue(note.getBody()));
+              break;
+          }
+        } else if (response.type === 'list') {
+          console.log(chalk.green(response.message));
+          if (response.notes) {
+            response.notes.forEach((userNote) => {
+              const note: Note = Note.deserialize(JSON.parse(userNote));
+              switch (note.getColor()) {
+                case Color.RED:
+                  console.log(chalk.red(note.getTitle()));
+                  break;
+                case Color.GREEN:
+                  console.log(chalk.green(note.getTitle()));
+                  break;
+                case Color.YELLOW:
+                  console.log(chalk.yellow(note.getTitle()));
+                  break;
+                case Color.BLUE:
+                  console.log(chalk.blue(note.getTitle()));
+                  break;
+              }
+            });
+          }
+        } else {
+          console.log(chalk.green(response.message));
+        }
+      } else {
+        console.log(chalk.red(response.message));
+      }
+    });
+  }
+}
+```
 
 ### __NoteManager__
 
