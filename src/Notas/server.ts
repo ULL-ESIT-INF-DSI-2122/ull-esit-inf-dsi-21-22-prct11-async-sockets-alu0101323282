@@ -16,6 +16,10 @@ export class NoteServer {
       connection.on('data', (data) => {
         let request: RequestType;
         request = JSON.parse(data.toString());
+        connection.emit('request', request);
+      });
+
+      connection.on('request', (request) => {
         console.log(`Request type: ${request.type}`);
         switch (request.type) {
           case 'add':

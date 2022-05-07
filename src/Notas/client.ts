@@ -25,6 +25,7 @@ yargs.command({
       describe: 'Note color',
       demandOption: true,
       type: 'string',
+      choices: ['red', 'blue', 'yellow', 'green'],
     },
   },
   handler(argv) {
@@ -69,6 +70,7 @@ yargs.command({
       describe: 'Note color',
       demandOption: true,
       type: 'string',
+      choices: ['red', 'blue', 'yellow', 'green'],
     },
   },
   handler(argv) {
